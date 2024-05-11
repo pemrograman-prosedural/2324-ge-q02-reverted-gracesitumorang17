@@ -56,7 +56,7 @@ int main(int _argc, char **_argv)
 
         else if ( strcmp(line, "dorm-print-all-detail") == 0 ) {
             for (short i=0; i<totalDorm; i++) {
-                print_DORMDetails(dorms[i], bool capacity);
+                print_DORMDetails(dorms[i], true);
             }
         }
 
