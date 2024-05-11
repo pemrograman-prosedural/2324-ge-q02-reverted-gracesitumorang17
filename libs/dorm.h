@@ -2,6 +2,7 @@
 #define DORM_H
 
 #include "gender.h"
+#include <stdbool.h>
 
 /**
  * @brief define your structure, enums, globally accessible variables, and function prototypes here.
@@ -9,14 +10,17 @@
  *
  */
 
-struct dorm_t
+typedef struct dorm_t
 {
   char name[20];
   unsigned short capacity;
   enum gender_t gender;
   unsigned short residents_num;
-};
+} DORM;
 
-struct dorm_t create_dorm(char *_name, unsigned short _capacity, enum gender_t _gender);
+DORM create_dorm(char *_name, unsigned short _capacity, enum gender_t _gender);
+void print_dorm (DORM dorm_to_print);
+void print_DORMDetails (DORM dorm_to_print, bool print_capacity);
+short findDORMInd (char*_name, DORM *daftar, int length);
 
 #endif
