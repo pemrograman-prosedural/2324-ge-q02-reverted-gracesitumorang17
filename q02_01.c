@@ -111,5 +111,19 @@ int main(int _argc, char **_argv)
         }
     }
 
+    // Tambahkan logika tambahan di sini untuk mencetak detail setelah dorm-empty
+    // Cek apakah student unassigned dan print detailnya
+    printf("student-print-all-detail\n");
+    for (size_t i = 0; i < totalStudent; i++) {
+        if (students[i].dorm == NULL) {
+            printStudentDetails(students[i]);
+        }
+    }
+    // Cetak detail dorm setelah dorm-empty
+    printf("dorm-print-all-detail\n");
+    for (size_t i = 0; i < totalDorm; i++) {
+        print_DORMDetails(dorms[i], true);
+    }
+
     return 0;
 }
