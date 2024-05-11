@@ -21,15 +21,8 @@ int main(int _argc, char **_argv)
     unsigned short totalStudent = 0;
     char line[LINE_LENGTH];
     char* token;
-    char* _id;
-    char* _name;
-    char* _year;
-    char* _dorm_name;
-    char* _student_name;
-    char* _student_id;
-    int _student_year;
-    enum gender_t _gender;
-    int _capacity;
+    char* _dorm_name; // Variabel yang digunakan
+    int _capacity; // Variabel yang digunakan
 
     while (fgets(line, LINE_LENGTH, stdin) != NULL)
     {
@@ -49,37 +42,39 @@ int main(int _argc, char **_argv)
         else {
             token = strtok(line, DELIMITER);
             if (strcmp(token,"dorm-add") == 0) {
-                _dorm_name = strtok(NULL, DELIMITER);
-                _capacity = atoi(strtok(NULL, DELIMITER));
+                _dorm_name = strtok(NULL, DELIMITER); // Menggunakan variabel yang sesuai
+                _capacity = atoi(strtok(NULL, DELIMITER)); // Menggunakan variabel yang sesuai
                 token = strtok(NULL, DELIMITER);
+                enum gender_t _gender; // Variabel yang tidak digunakan
                 if (strcmp(token, "male") == 0) {
                     _gender = GENDER_MALE;
                 }
                 else if (strcmp(token, "female") == 0) {
                     _gender = GENDER_FEMALE;
                 }
-                dorms[totalDorm] = create_dorm(_dorm_name, _capacity, _gender);
+                dorms[totalDorm] = create_dorm(_dorm_name, _capacity, _gender); // Menggunakan variabel yang sesuai
                 totalDorm++;
             }
             else if (strcmp(token,"student-add") == 0) {
-                _student_id = strtok(NULL, DELIMITER);
-                _student_name = strtok(NULL, DELIMITER);
-                _student_year = atoi(strtok(NULL, DELIMITER));
+                char* _student_id = strtok(NULL, DELIMITER); // Variabel yang digunakan
+                char* _student_name = strtok(NULL, DELIMITER); // Variabel yang digunakan
+                int _student_year = atoi(strtok(NULL, DELIMITER)); // Variabel yang digunakan
                 char str_year[5];
                 sprintf(str_year, "%d", _student_year);
                 token = strtok(NULL, DELIMITER);
+                enum gender_t _gender; // Variabel yang tidak digunakan
                 if (strcmp(token, "male") == 0) {
                     _gender = GENDER_MALE;
                 }
                 else if (strcmp(token, "female") == 0) {
                     _gender = GENDER_FEMALE;
                 }
-                students[totalStudent] = create_student(_student_id, _student_name, str_year, _gender);
+                students[totalStudent] = create_student(_student_id, _student_name, str_year, _gender); // Menggunakan variabel yang sesuai
                 totalStudent++;
             }
             else if (strcmp(token,"assign-student") == 0) {
-                _student_id = strtok(NULL, DELIMITER);
-                _dorm_name = strtok(NULL, DELIMITER);
+                char* _student_id = strtok(NULL, DELIMITER); // Variabel yang digunakan
+                char* _dorm_name = strtok(NULL, DELIMITER); // Variabel yang digunakan
                 short studentInd = findSTUDENTInd(_student_id, students, totalStudent);
                 short dormInd = findDORMInd(_dorm_name, dorms, totalDorm);
                 if (studentInd >= 0 && dormInd >= 0) {
@@ -87,7 +82,7 @@ int main(int _argc, char **_argv)
                 }
             }
             else if (strcmp(token,"dorm-empty") == 0) {
-                _dorm_name = strtok(NULL, DELIMITER);
+                _dorm_name = strtok(NULL, DELIMITER); // Menggunakan variabel yang sesuai
                 short dormInd = findDORMInd(_dorm_name, dorms, totalDorm);
                 if (dormInd >= 0) {
                     // Mengalokasikan array pointer ke STUDENT

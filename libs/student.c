@@ -26,21 +26,20 @@ STUDENT create_student(char *_id, char *_name, char *_year,enum gender_t _gender
 void printSTUDENT (STUDENT student_to_print)
 {
     if (strcmp(student_to_print.name, "") != 0){
-        printf("%s|%s|%s", student_to_print.id);
-        printf("%s|%s|%s", student_to_print.name);
-        printf("%s|%s|%s", student_to_print.year);
+        printf("%s|%s|%s|", student_to_print.id, student_to_print.name, student_to_print.year);
     }
     switch (student_to_print.gender)
     {
         case GENDER_MALE:
-        printf("|male");
-        break;
+            printf("male");
+            break;
 
         case GENDER_FEMALE:
-        printf("|female");
-        break;
+            printf("female");
+            break;
     }
 }
+
 short findSTUDENTInd (char*_id, STUDENT *daftar, int length)
 {
     for(short i = 0; i<length; i++){
@@ -52,11 +51,11 @@ short findSTUDENTInd (char*_id, STUDENT *daftar, int length)
 
 void assign (STUDENT *student_, DORM *dorm_)
 {
-    if (student_ ->gender == dorm_->gender && dorm_->residents_num < dorm_->capacity)
+    if (student_->gender == dorm_->gender && dorm_->residents_num < dorm_->capacity)
     {
-        student_ ->dorm = dorm_;
-        dorm_ ->residents_num++;
-        }
+        student_->dorm = dorm_;
+        dorm_->residents_num++;
+    }
     else {
         student_->dorm = NULL;
     }
@@ -81,24 +80,20 @@ void moveStudent ( STUDENT *migrasi, DORM *newResidence , DORM *oldResidence )
 void printStudentDetails ( STUDENT student_to_print )
 {
     if ( strcmp(student_to_print.name, "") != 0 ) {
-        printf( "%s|%s|%s", student_to_print.id);
-        printf( "%s|%s|%s", student_to_print.name);
-        printf( "%s|%s|%s", student_to_print.year);
-      
+        printf( "%s|%s|%s|", student_to_print.id, student_to_print.name, student_to_print.year);
 
         switch ( student_to_print.gender ) {
             case GENDER_MALE:
                 ( student_to_print.dorm != NULL ) ?
-                    printf("|male|%s\n", student_to_print.dorm->name) : printf("|male|unassigned\n");
+                    printf("male|%s\n", student_to_print.dorm->name) : printf("male|unassigned\n");
                 break;
-            
+
             case GENDER_FEMALE:
                 ( student_to_print.dorm != NULL ) ?
-                    printf("|female|%s\n", student_to_print.dorm->name) : printf("|female|unassigned\n");
+                    printf("female|%s\n", student_to_print.dorm->name) : printf("female|unassigned\n");
                 break;
         }
     }
-   
 }
 
 void emptyDorm ( DORM* residence, STUDENT** posibResidents, unsigned short totalPR )
@@ -110,4 +105,3 @@ void emptyDorm ( DORM* residence, STUDENT** posibResidents, unsigned short total
         }
     }
 }
-
