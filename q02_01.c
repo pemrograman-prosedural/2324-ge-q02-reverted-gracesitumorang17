@@ -3,149 +3,118 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include "./libs/dorm.h"
 #include "./libs/student.h"
 
+#define MAX_DORMS 50
+#define MAX_STUDENTS 50
+#define LINE_LENGTH 255
+#define DELIMITER "#"
+
 int main(int _argc, char **_argv)
 {
-     DORM *dorms = (DORM*) malloc(1 * sizeof(DORM));
-    STUDENT *students = (STUDENT*) malloc(1 * sizeof(STUDENT));
-    unsigned short totalDorm;
-    unsigned short totalStudent;
-    char line[255];
-    char delim[2] = "#";
+    DORM dorms[MAX_DORMS];
+    STUDENT students[MAX_STUDENTS];
+    
+    unsigned short totalDorm = 0;
+    unsigned short totalStudent = 0;
+    char line[LINE_LENGTH];
+    char* token;
+    char* _id;
+    char* _name;
+    char* _year;
+    char* _dorm_name;
+    char* _student_name;
+    char* _student_id;
+    int _student_year;
+    enum gender_t _gender;
+    int _capacity;
 
+    while (fgets(line, LINE_LENGTH, stdin) != NULL)
+    {
+        line[strcspn(line, "\r\n")] = '\0';
 
-    while ( 1 ) {
-        line[0] = '\0';
-        fgets(line, 255, stdin);
-
-        {
-            int len = strlen(line);
-            for (short a = 0; a < len; a++) {
-                if(line[a] == '\r' || line[a] == '\n') {
-                    for(short b = a; b < len; b++) { line[b] = line[b + 1]; }
-                    len--;
-                    a--;
-                }
-            }
-        }
-
-        if ( strcmp(line, "---") == 0 ) break;
-
-        else if ( strcmp(line, "student-print-all") == 0 ) {
-            for (short i=0; i<totalStudent; i++) {
-                printSTUDENT(students[i]);
-            }
-        }
-
-        else if ( strcmp(line, "dorm-print-all") == 0 ) {
-            for (short i=0; i<totalDorm; i++) {
+        if (strcmp(line, "---") == 0) break;
+        else if (strcmp(line, "dorm-print-all") == 0) {
+            for (size_t i = 0; i < totalDorm; i++) {
                 print_dorm(dorms[i]);
             }
         }
-
-        else if ( strcmp(line, "student-print-all-detail") == 0 ) {
-            for (short i=0; i<totalStudent; i++) {
+        else if (strcmp(line, "student-print-all") == 0) {
+            for (size_t i = 0; i < totalStudent; i++) {
                 printStudentDetails(students[i]);
             }
-            
         }
-
-        else if ( strcmp(line, "dorm-print-all-detail") == 0 ) {
-            for (short i=0; i<totalDorm; i++) {
-                print_DORMDetails(dorms[i], true);
-            }
-        }
-
         else {
-            char *token = strtok(line, delim);
-
-            if ( strcmp(token, "student-add") == 0 ) {
-                token = strtok(NULL, delim); char *_id = token;
-                token = strtok(NULL, delim); char *_name = token;
-                token = strtok(NULL, delim); char *_year = token;
-                
-                token = strtok(NULL, delim);
-                if ( totalStudent > 0 ) {
-                    students = (STUDENT*) realloc(students, (totalStudent+1) * sizeof(STUDENT));
+            token = strtok(line, DELIMITER);
+            if (strcmp(token,"dorm-add") == 0) {
+                _dorm_name = strtok(NULL, DELIMITER);
+                _capacity = atoi(strtok(NULL, DELIMITER));
+                token = strtok(NULL, DELIMITER);
+                if (strcmp(token, "male") == 0) {
+                    _gender = GENDER_MALE;
                 }
-                if ( strcmp(token, "male") == 0 ) {
-                    students[totalStudent] = create_student(_id, _name, _year, GENDER_MALE);
-                    totalStudent++;
+                else if (strcmp(token, "female") == 0) {
+                    _gender = GENDER_FEMALE;
                 }
-                else if ( strcmp(token, "female") == 0 ) {
-                    students[totalStudent] = create_student(_id, _name, _year, GENDER_FEMALE);
-                    totalStudent++;
-                }
+                dorms[totalDorm] = create_dorm(_dorm_name, _capacity, _gender);
+                totalDorm++;
             }
-
-            else if ( strcmp(token, "dorm-add") == 0 ) {
-                token = strtok(NULL, delim); char *_name = token;
-                token = strtok(NULL, delim); unsigned short _capacity = atoi(token);
-                token = strtok(NULL, delim);
-                if ( totalDorm > 0 ) {
-                    dorms = (DORM*) realloc(dorms, (totalDorm+1) * sizeof(DORM));
+            else if (strcmp(token,"student-add") == 0) {
+                _student_id = strtok(NULL, DELIMITER);
+                _student_name = strtok(NULL, DELIMITER);
+                _student_year = atoi(strtok(NULL, DELIMITER));
+                char str_year[5];
+                sprintf(str_year, "%d", _student_year);
+                token = strtok(NULL, DELIMITER);
+                if (strcmp(token, "male") == 0) {
+                    _gender = GENDER_MALE;
                 }
-                if ( strcmp(token, "male") == 0 ) {
-                    dorms[totalDorm] = create_dorm(_name, _capacity, GENDER_MALE);
-                    totalDorm++;
+                else if (strcmp(token, "female") == 0) {
+                    _gender = GENDER_FEMALE;
                 }
-                else if ( strcmp(token, "female") == 0 ) {
-                    dorms[totalDorm] = create_dorm(_name, _capacity, GENDER_FEMALE);
-                    totalDorm++;
-                }
+                students[totalStudent] = create_student(_student_id, _student_name, str_year, _gender);
+                totalStudent++;
             }
-
-            else if ( strcmp(token, "assign-student") == 0 ) {
-                token = strtok(NULL, delim); char *_id = token;
-                token = strtok(NULL, delim); char *dorm_name = token;
-
-                short studentInd = findSTUDENTInd(_id, students, totalStudent);
-                short dormInd = findDORMInd(dorm_name, dorms, totalDorm);
-
-                if ( studentInd>=0 && dormInd>=0 ) {
+            else if (strcmp(token,"assign-student") == 0) {
+                _student_id = strtok(NULL, DELIMITER);
+                _dorm_name = strtok(NULL, DELIMITER);
+                short studentInd = findSTUDENTInd(_student_id, students, totalStudent);
+                short dormInd = findDORMInd(_dorm_name, dorms, totalDorm);
+                if (studentInd >= 0 && dormInd >= 0) {
                     assign(&students[studentInd], &dorms[dormInd]);
                 }
             }
-
-            else if ( strcmp(token, "move-student") == 0 ) {
-                token = strtok(NULL, delim); char *_id = token;
-                token = strtok(NULL, delim); char *dorm_name = token;
-
-                short studentInd = findSTUDENTInd(_id, students, totalStudent);
-                short newDormInd = findDORMInd(dorm_name, dorms, totalDorm);
-                char *_name = students[studentInd].dorm->name;
-                if (_name != NULL) {
-                    short oldDormInd = findDORMInd( _name, dorms, totalDorm );
-
-                    if ( studentInd>=0 && newDormInd>=0 && oldDormInd>=0 ) {
-                        moveStudent(&students[studentInd], &dorms[newDormInd] , &dorms[oldDormInd]);
-                    }
-                } else {
-                    assign(&students[studentInd], &dorms[newDormInd]);
-                }
-            }
-
-            else if ( strcmp(token, "dorm-empty") == 0 ) {
-                token = strtok(NULL, delim);
-                char *dorm_name = token;
-                short target = findDORMInd(dorm_name, dorms, totalDorm);
-                
-
-                for (short i=0; i<totalStudent; i++) {
-                    if (students[i].dorm != NULL) { 
-                        if ( strcmp(students[i].dorm->name, dorm_name) == 0 ) {
-                            unassign(&students[i], &dorms[target]);
+            else if (strcmp(token,"dorm-empty") == 0) {
+                _dorm_name = strtok(NULL, DELIMITER);
+                short dormInd = findDORMInd(_dorm_name, dorms, totalDorm);
+                if (dormInd >= 0) {
+                    // Mengalokasikan array pointer ke STUDENT
+                    STUDENT *residentPtrs[MAX_STUDENTS];
+                    int residentCount = 0;
+                    for (size_t i = 0; i < totalStudent; i++) {
+                        if (students[i].dorm == &dorms[dormInd]) {
+                            residentPtrs[residentCount++] = &students[i];
                         }
                     }
+                    // Memanggil emptyDorm dengan parameter yang sesuai
+                    emptyDorm(&dorms[dormInd], residentPtrs, residentCount);
+                    dorms[dormInd].residents_num = 0;
+                }
+            }
+            else if (strcmp(token,"student-print-all-detail") == 0) {
+                for (size_t i = 0; i < totalStudent; i++) {
+                    printStudentDetails(students[i]);
+                }
+            }
+            else if (strcmp(token,"dorm-print-all-detail") == 0) {
+                for (size_t i = 0; i < totalDorm; i++) {
+                    print_DORMDetails(dorms[i], true);
                 }
             }
         }
     }
-    
 
     return 0;
 }

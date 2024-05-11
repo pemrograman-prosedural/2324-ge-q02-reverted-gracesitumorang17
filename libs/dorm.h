@@ -19,8 +19,8 @@ typedef struct dorm_t
 } DORM;
 
 DORM create_dorm(char *_name, unsigned short _capacity, enum gender_t _gender);
-void print_dorm (DORM dorm_to_print);
-void print_DORMDetails (DORM dorm_to_print, bool print_capacity);
-short findDORMInd (char*_name, DORM *daftar, int length);
+void print_dorm(DORM dorm_to_print);
+void print_DORMDetails(DORM dorm_to_print, bool print_capacity);
+short findDORMInd(char *_name, DORM *daftar, int length);
 
 #endif
